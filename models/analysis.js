@@ -22,4 +22,4 @@ const analysisSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-export default mongoose.model('Analysis', analysisSchema)
+export default mongoose.model('analysis', analysisSchema)
