@@ -71,7 +71,7 @@ Results are returned in a structured JSON format to support interpretability and
 The application requires the following environment variables:
 
 ```env
-HF_TOKEN=HuggingFace API token
-MONGODB_URI=MongoDB Atlas connection string
-ANALYSIS=System prompt used for bias analysis
+HF_TOKEN= Your_HuggingFace API token
+MONGODB_URI= Your_connection string
+ANALYSIS=Your_analysis
 
