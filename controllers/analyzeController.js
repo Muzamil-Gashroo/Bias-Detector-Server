@@ -1,5 +1,5 @@
 import { InferenceClient } from '@huggingface/inference'
-import Analysis from '../models/Analysis.js'
+import analysis from '../models/analysis.js'
 import { extractJSON } from '../utils/extractJSON.js'
 import { scrapeArticle } from '../utils/scrapeArticle.js'
 
@@ -23,7 +23,7 @@ export async function analyzeText(req, res) {
     const result = extractJSON(response.choices[0].message.content)
     result.confidence = Math.max(0, Math.min(100, result.confidence))
 
-    await Analysis.create({
+    await analysis.create({
       type: 'text',
       input: text,
       result
@@ -56,7 +56,7 @@ export async function analyzeUrl(req, res) {
     const result = extractJSON(response.choices[0].message.content)
     result.confidence = Math.max(0, Math.min(100, result.confidence))
 
-    await Analysis.create({
+    await analysis.create({
       type: 'url',
       input: url,
       result
