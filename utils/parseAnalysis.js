@@ -7,41 +7,63 @@ export function parseAnalysis(text) {
     explanation: ''
   }
 
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
+  const lines = text
+    .split('\n')
+    .map(l => l.trim())
+    .filter(Boolean)
 
   let currentSection = null
 
   for (const line of lines) {
+
     if (line.startsWith('Bias Level:')) {
       result.bias_level = line.replace('Bias Level:', '').trim()
+      continue
     }
-    else if (line.startsWith('Confidence:')) {
-      result.confidence = parseInt(
+
+    if (line.startsWith('Confidence:')) {
+      const value = parseInt(
         line.replace('Confidence:', '').trim(),
         10
       )
+      result.confidence = isNaN(value) ? null : value
+      continue
     }
-    else if (line === 'Biased Sentences:') {
+
+    if (line.startsWith('Biased Sentences:')) {
       currentSection = 'biased_sentences'
+      continue
     }
-    else if (line === 'Techniques:') {
+
+    if (line.startsWith('Techniques:')) {
       currentSection = 'techniques'
+      continue
     }
-    else if (line === 'Explanation:') {
+
+    // 🔥 FIX: handle "Explanation:" on same line
+    if (line.startsWith('Explanation:')) {
       currentSection = 'explanation'
+      const inlineText = line.replace('Explanation:', '').trim()
+      if (inlineText) {
+        result.explanation += inlineText + ' '
+      }
+      continue
     }
-    else if (line.startsWith('-') && currentSection) {
+
+    if (line.startsWith('-') && currentSection) {
       result[currentSection].push(
         line.replace(/^-/, '').trim()
       )
+      continue
     }
-    else if (currentSection === 'explanation') {
+
+    if (currentSection === 'explanation') {
       result.explanation += line + ' '
     }
   }
 
-  
-  result.confidence = Math.max(0, Math.min(100, result.confidence || 0))
+  result.explanation = result.explanation.trim()
+  result.confidence = Math.max(0, Math.min(100, result.confidence ?? 0))
 
   return result
 }
